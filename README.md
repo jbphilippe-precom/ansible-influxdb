@@ -116,9 +116,5 @@ Exemple of launch
 License
 -------
 
-BSD
-
 Author Information
 ------------------
-
-BSO ISL - sponge
