@@ -1,0 +1,28 @@
+---
+# Influxdb create BDD
+
+- name: Create Database
+  uri:
+    url: http://{{ ansible_fqdn }}:8086/query?u={{ influxdb_admin_user }}&p={{ influxdb_admin_password }}
+    method: POST
+    body: "q=CREATE DATABASE {{ influxdb_db_name_collectd }}"
+  when: influxdb_create_database and influxdb_collectd_input
+
+
+- name: Create Database
+  uri:
+    url: http://{{ ansible_fqdn }}:8086/query?u={{ influxdb_admin_user }}&p={{ influxdb_admin_password }}
+    method: POST
+    body: "q=CREATE DATABASE {{ influxdb_db_name_graphite }}"
+  when: influxdb_create_database and influxdb_graphite_input
+
+#- name: Create database
+#  influxdb_database:
+#    hostname={{ ansible_fqdn }}
+#    username={{ influxdb_admin_user }}
+#    password={{ influxdb_admin_password }}
+#    database_name={{ influxdb_db_name }}
+#    state=present
+#  when: influxdb_create_database
+
+- include: influxdb_retention_policies.yml

@@ -1,0 +1,14 @@
+---
+# Infludb installation lv
+
+- name: Install utils
+  apt: name=xfsprogs update_cache=yes state=latest
+
+- name: Create InfluxDB logical volume
+  lvol: vg={{ influxdb_vg_name }} lv={{ influxdb_lv_name }} size={{ influxdb_lvsize }}G state=present
+
+- name: Create InfluxDB xfs filesystem
+  filesystem: dev=/dev/{{ influxdb_vg_name }}/{{ influxdb_lv_name }} fstype=xfs
+
+- name: Mount InfluxDB logical volume to data directory
+  mount: name={{ influxdb_data_path }} src=/dev/mapper/{{ influxdb_vg_name }}-{{ influxdb_lv_name }} fstype=xfs opts=nobarrier,noatime,logbufs=8 state=mounted

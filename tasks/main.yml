@@ -1,0 +1,6 @@
+---
+# tasks file for Influxdb
+
+- include: influxdb_install.yml
+  when: ansible_distribution == 'Ubuntu'
+  tags: [installation]

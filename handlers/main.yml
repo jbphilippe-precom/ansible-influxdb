@@ -1,0 +1,15 @@
+---
+# handlers file for TelegrafInfluxdbGrafana
+
+# Influxdb
+- name: start influxdb
+  service: name={{ influxdb_service_name }} state=started
+
+- name: stop influxdb
+  service: name={{ influxdb_service_name }} state=stoped
+
+- name: restart influxdb
+  service: name={{ influxdb_service_name }} state=restarted
+
+- name: wait for influxdb
+  wait_for: port={{ influxdb_meta_port }}

@@ -1,0 +1,47 @@
+---
+# defaults file for Influxdb
+
+# Base
+influxdb_version: latest
+influxdb_lv: true
+influxdb_vg_name: vg_vroot
+influxdb_lv_name: lv_influxdb
+influxdb_lvsize: 5
+influxdb_service_name: influxdb
+influxdb_conf_path: /etc/influxdb/
+influxdb_data_path: /var/lib/influxdb/
+
+# HTTP auth
+influxdb_http: true
+influxdb_http_auth: true
+influxdb_http_port: 8086
+influxdb_bind_address_http: ""
+
+# User admin
+influxdb_admin_user: root
+
+# Port & Bind
+influxdb_meta_port: 8088
+influxdb_bind_address_meta: ""
+
+# Database
+influxdb_create_database: false
+influxdb_db_name_collectd: ""
+influxdb_db_name_graphite: ""
+
+# User
+influxdb_create_user: false
+influxdb_user_name: ""
+
+# Retention policies
+influxdb_retention_days: 365
+influxdb_replica_factor: 1
+
+# Collectd
+influxdb_collectd_input: false
+influxdb_collectd_bind: :25826
+influxdb_collectd_typesdb: /usr/share/collectd/types.db
+
+# Graphite
+influxdb_graphite_input: false
+influxdb_graphite_bind: :2003

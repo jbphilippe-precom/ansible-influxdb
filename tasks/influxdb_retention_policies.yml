@@ -1,0 +1,24 @@
+---
+# Influxdb retention policies configuration
+
+- name: Create retention policies
+  uri:
+    url: http://{{ ansible_fqdn }}:8086/query?u={{ influxdb_admin_user }}&p={{ influxdb_admin_password }}
+    method: POST
+    body: "q=CREATE RETENTION POLICY {{ influxdb_db_name }} ON {{ influxdb_db_name }} DURATION {{ influxdb_retention_days }}d REPLICATION {{ influxdb_replica_factor }} DEFAULT"
+  when: influxdb_create_database
+
+- name: Alter _internal retention policies
+  uri:
+    url: http://{{ ansible_fqdn }}:8086/query?u={{ influxdb_admin_user }}&p={{ influxdb_admin_password }}
+    method: POST
+    body: "q=ALTER RETENTION POLICY monitor ON _internal DURATION {{ influxdb_retention_days }}d DEFAULT"
+
+#- name: Create retention policies
+#  influxdb_retention_policy:
+#    hostname={{ansible_fqdn}}
+#    database_name={{ influxdb_db_name }}
+#    policy_name={{ influxdb_db_name }}
+#    duration={{ influxdb_retention_days }}
+#    replication={{ influxdb_replica_factor }}
+#  when: influxdb_create_database

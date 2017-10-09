@@ -1,0 +1,51 @@
+---
+# Infludb installation
+
+- include: influxdb_lv.yml
+  when: influxdb_lv
+
+- name: Influxdb Package Key
+  apt_key: url=http://mirror.services.local/pubkey/influxdb.gpg.pub state=present
+
+- name: InfluxDB APT repository
+  apt_repository: repo='deb [arch=amd64] http://mirror.services.local/influxdb/ubuntu {{ ansible_distribution_release }} stable' state=present
+
+- name: Install latest InfluxDB
+  apt: name=influxdb update_cache=yes state=latest
+  register: install_latest_change
+  when: influxdb_version == "latest"
+
+- name: Install specific version InfluxDB
+  apt: name=influxdb={{ influxdb_version }} update_cache=yes state=present
+  register: install_specific_change
+  when: influxdb_version != "latest"
+
+- name: Install util curl
+  apt: name=curl update_cache=yes state=latest
+
+# Include in ansible v2.1
+#- name: Install httplib2
+#  apt: name=python-httplib2 update_cache=yes state=latest
+
+- name: create log file influxdb
+  file: path=/var/log/influxdb/influxdb.log state=touch owner=influxdb mode=0755
+
+- name: Update systemd service file
+  template: src=influxd_systemd_file.j2 dest=/etc/systemd/system/influxd.service force=yes owner=root group=root
+  register: restart_influxd_systemd_symlink
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == "xenial"
+
+- name: reload systemctl daemon reload
+  shell: systemctl daemon-reload
+  when: restart_influxd_systemd_symlink|changed
+
+
+- name: start influxdb
+  service: name={{ influxdb_service_name }} state=started
+  when: install_latest_change|changed or install_specific_change|changed
+
+- name: wait for influxdb
+  wait_for: port={{ influxdb_meta_port }} delay=10
+  when: install_latest_change|changed or install_specific_change|changed
+
+- include: influxdb_config.yml

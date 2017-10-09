@@ -1,0 +1,9 @@
+---
+# Influxdb create privilege
+
+- name: Create user privilege
+  uri:
+    url: http://{{ ansible_fqdn }}:8086/query?u={{ influxdb_admin_user }}&p={{ influxdb_admin_password }}
+    method: POST
+    body: "q=GRANT ALL PRIVILEGES ON {{ influxdb_db_name }} TO {{ influxdb_user_name }}"
+  when: influxdb_create_user
